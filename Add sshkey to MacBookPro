@@ -1,0 +1,31 @@
+#!/bin/bash
+
+# Add my ssh-key to ubuntu root user and active ssh root login
+# Login as root or run with sudo
+# wget -q -O - "https://gist.github.com/saderi/7b970d77ce3603cdff250d29bf2ab333/raw" | bash -
+
+if [[ $EUID -ne 0 ]]; then
+   echo "This script must be run as root" 
+   exit 1
+fi
+
+MY_SSH_KEY='ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC4eMVFsfSOXLQ/SBsiRlbedJDPb5lwGFUVNXWk/MiPAfT2N0IRLsHJBfh8JE59RGXNekSQNQHrbujNiJ7kdG8XDWNZoKDnyvv5jZWwnw2eyT0XqKNJpnicwVdT19nw+8vfKVvluwoOsCTX+Lf2gJRT3P5du5opHOgeERZlsLW1/IbBQOTPao3rPvfYZFy8EiFnbsEK4htF11Qh564K4Yk+EwttMDgoKhgBmk91ZdXXv+lsf7gAeUZFvkX75FhC9l4CFpczCcU6MLRyB/lSLBxwb9d8bOsm3VKK2tA6vKQNjeDNgvmJbySXqHtpHhDiM60PcXwWSpH09BFC6k0pcLwh rasitulcay@Rasit-MacBook-Pro.local'
+
+mkdir -p /root/.ssh
+echo $MY_SSH_KEY >> /root/.ssh/authorized_keys
+
+sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/g' /etc/ssh/sshd_config
+sed -i 's/#AuthorizedKeysFile/AuthorizedKeysFile/g' /etc/ssh/sshd_config
+
+
+if [ -d /run/systemd/system ]; then
+   systemctl restart ssh
+else
+   service ssh restart
+fi
+
+
+
+echo "Done"
+
+exit 1
