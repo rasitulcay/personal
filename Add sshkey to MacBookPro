@@ -2,7 +2,7 @@
 
 # Add my ssh-key to ubuntu root user and active ssh root login
 # Login as root or run with sudo
-# wget -q -O - "https://gist.github.com/saderi/7b970d77ce3603cdff250d29bf2ab333/raw" | bash -
+# wget -q -O - "https://raw.githubusercontent.com/rasitulcay/personal/master/Add%20sshkey%20to%20MacBookPro" | bash -
 
 if [[ $EUID -ne 0 ]]; then
    echo "This script must be run as root" 
