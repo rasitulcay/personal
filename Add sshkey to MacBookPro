@@ -14,17 +14,11 @@ MY_SSH_KEY='ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC4eMVFsfSOXLQ/SBsiRlbedJDPb5lw
 mkdir -p /root/.ssh
 echo $MY_SSH_KEY >> /root/.ssh/authorized_keys
 
-sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/g' /etc/ssh/sshd_config
-sed -i 's/#AuthorizedKeysFile/AuthorizedKeysFile/g' /etc/ssh/sshd_config
-
-
 if [ -d /run/systemd/system ]; then
    systemctl restart ssh
 else
    service ssh restart
 fi
-
-
 
 echo "Done"
 
