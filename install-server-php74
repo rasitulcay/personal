@@ -13,16 +13,16 @@ apt -y install language-pack-en libvips-tools zip unzip zbar-tools python-setupt
                     redis \
                     libssl-dev
 
-
+printf "\n" | LC_ALL=C.UTF-8 add-apt-repository ppa:ondrej/php
 apt -y update
-apt -y install imagemagick php7.4 php7.4-cli php7.4-fpm \
+apt -y install php7.4 php7.4-cli php7.4-fpm \
                         php7.4-mysql \
                         php7.4-gd php7.4-curl php7.4-xml \
                         php7.4-mbstring php7.4-ldap \
                         php7.4-zip php7.4-dev php7.4-intl\
                         libmcrypt-dev
 
-printf "\n" | pecl install mcrypt-1.0.1
+printf "\n" | pecl install mcrypt
 
 
 # mysql secure
@@ -34,7 +34,7 @@ printf "\n" | pecl install mcrypt-1.0.1
               DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1');
               DROP DATABASE IF EXISTS test;
               DELETE FROM mysql.db WHERE Db='test' OR Db='test\\_%';
-              GRANT ALL PRIVILEGES ON *.* TO ${DB_USERNAME}@'%' IDENTIFIED BY 'Ra27sit04++Dera';
+              GRANT ALL PRIVILEGES ON *.* TO 'enter_root'@'%' IDENTIFIED BY 'Ra27sit04++Dera';
               ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'Ra27sit04++Dera';
               FLUSH PRIVILEGES;"
 
