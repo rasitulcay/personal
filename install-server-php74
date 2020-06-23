@@ -1,0 +1,70 @@
+dpkg-reconfigure debconf --frontend=noninteractive
+
+apt update
+apt -y install software-properties-common
+
+echo "Europe/Istanbul" > /etc/timezone
+locale-gen tr_TR tr_TR.UTF-8 en_US en_US.UTF-8
+apt -y install language-pack-en libvips-tools zip unzip zbar-tools python-setuptools \
+                    debconf-utils \
+                    mysql-server mysql-client \
+                    curl \
+                    nginx supervisor nginx-extras \
+                    redis \
+                    libssl-dev
+
+
+apt -y update
+apt -y install imagemagick php7.4 php7.4-cli php7.4-fpm \
+                        php7.4-mysql \
+                        php7.4-gd php7.4-curl php7.4-xml \
+                        php7.4-mbstring php7.4-ldap \
+                        php7.4-zip php7.4-dev php7.4-intl\
+                        libmcrypt-dev
+
+printf "\n" | pecl install mcrypt-1.0.1
+
+
+# mysql secure
+    mysql -e "INSTALL PLUGIN validate_password SONAME 'validate_password.so';" || true
+    mysql -e "SET GLOBAL validate_password_length = 6;
+              SET GLOBAL validate_password_number_count = 0;
+              SET GLOBAL validate_password_policy = 0;
+              DELETE FROM mysql.user WHERE User='';
+              DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1');
+              DROP DATABASE IF EXISTS test;
+              DELETE FROM mysql.db WHERE Db='test' OR Db='test\\_%';
+              GRANT ALL PRIVILEGES ON *.* TO ${DB_USERNAME}@'%' IDENTIFIED BY 'Ra27sit04++Dera';
+              ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'Ra27sit04++Dera';
+              FLUSH PRIVILEGES;"
+
+systemctl restart mysql
+
+
+
+
+# disable apache2
+update-rc.d apache2 disable
+
+# stop apache2
+systemctl stop apache2.service
+
+
+# Redis Kurulumu
+systemctl enable redis
+systemctl start redis
+systemctl restart redis
+
+
+# Composer
+curl -sS https://getcomposer.org/installer | php && \
+    mv composer.phar /usr/local/bin/composer
+
+rm /etc/nginx/sites-enabled/default
+
+# Supervisor
+groupadd supervisor
+usermod -a -G supervisor root
+systemctl enable supervisor
+systemctl start supervisor
+
